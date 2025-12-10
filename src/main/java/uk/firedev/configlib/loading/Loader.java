@@ -2,7 +2,6 @@ package uk.firedev.configlib.loading;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import uk.firedev.configlib.exception.ConfigException;
 
 import java.io.File;
 import java.io.IOException;

@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.firedev.configlib.exception.ConfigException;
 import uk.firedev.configlib.loading.ConfigUpdater;
 import uk.firedev.configlib.loading.Loader;
 
@@ -123,7 +122,7 @@ public abstract class ConfigFile {
             // In case the file is deleted.
             Loader.createFile(this.file, fetchResource(this.plugin, this.resourcePath));
             this.config.load(this.file);
-        } catch (ConfigException | IOException | InvalidConfigurationException exception) {
+        } catch (IOException | InvalidConfigurationException exception) {
             logger.error(
                 "Failed to reload " + this.file.getName(),
                 exception
