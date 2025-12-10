@@ -14,9 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.logging.Level;
 
 public abstract class ConfigFile {
 
@@ -78,6 +75,10 @@ public abstract class ConfigFile {
             return null;
         }
         return plugin.getResource(resourcePath);
+    }
+
+    public @Nullable Plugin getPlugin() {
+        return this.plugin;
     }
 
     // Config Things
