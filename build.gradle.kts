@@ -1,9 +1,7 @@
 plugins {
-    id("java")
+    `java-library`
+    `maven-publish`
 }
-
-group = "uk.firedev"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -12,4 +10,42 @@ repositories {
 
 dependencies {
     compileOnly(libs.paper.api)
+}
+
+group = "uk.firedev"
+version = properties["project-version"] as String
+description = "A library to easily handle configs"
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.codemc.io/repository/FireML/")
+
+            val mavenUsername = System.getenv("JENKINS_USERNAME")
+            val mavenPassword = System.getenv("JENKINS_PASSWORD")
+
+            if (mavenUsername != null && mavenPassword != null) {
+                credentials {
+                    username = mavenUsername
+                    password = mavenPassword
+                }
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = rootProject.name
+            version = project.version.toString()
+
+            from(components["java"])
+        }
+    }
+}
+
+tasks {
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
 }

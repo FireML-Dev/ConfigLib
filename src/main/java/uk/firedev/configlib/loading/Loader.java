@@ -1,4 +1,4 @@
-package uk.firedev.configlib.util;
+package uk.firedev.configlib.loading;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
