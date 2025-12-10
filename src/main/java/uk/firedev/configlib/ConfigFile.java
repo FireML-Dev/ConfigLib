@@ -101,7 +101,7 @@ public abstract class ConfigFile {
     /**
      * Updates the configuration to include any manual edits.
      */
-    public abstract void performManualUpdates();
+    protected abstract void performManualUpdates();
 
     /**
      * Moves the value of a specified key to the destination.
