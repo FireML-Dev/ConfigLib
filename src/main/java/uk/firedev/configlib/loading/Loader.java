@@ -12,19 +12,15 @@ import java.nio.file.StandardCopyOption;
 
 public class Loader {
 
-    public static void createFile(@NotNull File file, @Nullable InputStream resource) throws ConfigException {
+    public static void createFile(@NotNull File file, @Nullable InputStream resource) throws IOException {
         if (file.exists()) {
             return;
         }
-        try  {
-            file.getParentFile().mkdirs();
-            if (resource == null) {
-                file.createNewFile();
-            } else {
-                Files.copy(resource, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-        } catch (IOException exception) {
-            throw new ConfigException(exception);
+        file.getParentFile().mkdirs();
+        if (resource == null) {
+            file.createNewFile();
+        } else {
+            Files.copy(resource, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

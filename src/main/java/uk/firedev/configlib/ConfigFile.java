@@ -31,14 +31,14 @@ public abstract class ConfigFile {
 
     // Constructors
 
-    public ConfigFile(@NotNull File file, @Nullable InputStream resource) throws ConfigException {
-        Loader.createFile(file, resource);
+    public ConfigFile(@NotNull File file, @Nullable InputStream resource) {
         this.file = file;
 
         try {
+            Loader.createFile(file, resource);
             this.config.load(file);
         } catch (IOException | InvalidConfigurationException exception) {
-            throw new ConfigException(exception);
+            logger.error("Could not load " + file.getName(), exception);
         }
 
         try {
@@ -54,18 +54,18 @@ public abstract class ConfigFile {
         save();
     }
 
-    public ConfigFile(@NotNull File file) throws ConfigException {
+    public ConfigFile(@NotNull File file) {
         this(file, null);
     }
 
-    public ConfigFile(@NotNull String filePath, @NotNull Plugin plugin) throws ConfigException {
+    public ConfigFile(@NotNull String filePath, @NotNull Plugin plugin) {
         this(
             new File(plugin.getDataFolder(), filePath)
         );
         this.plugin = plugin;
     }
 
-    public ConfigFile(@NotNull String filePath, @NotNull String resourcePath, @NotNull Plugin plugin) throws ConfigException {
+    public ConfigFile(@NotNull String filePath, @NotNull String resourcePath, @NotNull Plugin plugin) {
         this(
             new File(plugin.getDataFolder(), filePath),
             fetchResource(plugin, resourcePath)
