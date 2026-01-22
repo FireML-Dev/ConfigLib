@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public abstract class ConfigFile {
+public class ConfigFile {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigFile.class);
 
