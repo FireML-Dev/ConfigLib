@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.firedev.configlib.loading.ConfigUpdater;
 import uk.firedev.configlib.loading.Loader;
 
 import java.io.File;
@@ -19,11 +18,10 @@ public abstract class ConfigFile {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigFile.class);
 
-    private final YamlConfiguration config = new YamlConfiguration();
-    private final YamlConfiguration defaults = new YamlConfiguration();
-    private final @NotNull File file;
-    private @Nullable Plugin plugin;
-    private @Nullable String resourcePath;
+    protected final YamlConfiguration config = new YamlConfiguration();
+    protected final @NotNull File file;
+    protected @Nullable Plugin plugin;
+    protected @Nullable String resourcePath;
 
     // Constructors
 
@@ -37,17 +35,18 @@ public abstract class ConfigFile {
             logger.error("Could not load " + file.getName(), exception);
         }
 
-        try {
-            if (resource != null) {
+        if (resource != null) {
+            try {
                 InputStreamReader reader = new InputStreamReader(resource);
-                this.defaults.load(reader);
+                YamlConfiguration config = new YamlConfiguration();
+                config.load(reader);
+                this.config.setDefaults(config);
+                this.config.options().copyDefaults(true);
+                save();
+            } catch (IOException | InvalidConfigurationException exception) {
+                logger.warn("Failed to load default config.", exception);
             }
-        } catch (IOException | InvalidConfigurationException exception) {
-            logger.warn("Failed to load default config.", exception);
         }
-
-        performManualUpdates();
-        save();
     }
 
     public ConfigFile(@NotNull File file) {
@@ -70,6 +69,15 @@ public abstract class ConfigFile {
         this.resourcePath = resourcePath;
     }
 
+    public ConfigFile(@NotNull File file, @NotNull String resourcePath, @NotNull Plugin plugin) {
+        this(
+            file,
+            fetchResource(plugin, resourcePath)
+        );
+        this.plugin = plugin;
+        this.resourcePath = resourcePath;
+    }
+
     private static @Nullable InputStream fetchResource(@Nullable Plugin plugin, @Nullable String resourcePath) {
         if (plugin == null || resourcePath == null) {
             return null;
@@ -81,28 +89,15 @@ public abstract class ConfigFile {
         return this.plugin;
     }
 
+    public @NotNull File getFile() {
+        return this.file;
+    }
+
     // Config Things
 
     public @NotNull YamlConfiguration getConfig() {
         return this.config;
     }
-
-    public @NotNull YamlConfiguration getDefaults() {
-        return this.defaults;
-    }
-
-    /**
-     * Updates the configuration to include any new defaults.
-     */
-    public void pullDefaults() {
-        new ConfigUpdater(this).update();
-        save();
-    }
-
-    /**
-     * Updates the configuration to include any manual edits.
-     */
-    protected abstract void performManualUpdates();
 
     /**
      * Moves the value of a specified key to the destination.
